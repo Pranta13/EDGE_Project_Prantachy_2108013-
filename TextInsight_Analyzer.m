@@ -1,0 +1,35 @@
+sonnetsText = fileread('sonnets.txt');
+disp(sonnetsText(1:35));
+sonnetsText = string(sonnetsText);
+sonnetsLines = splitlines(sonnetsText);
+disp(sonnetsLines(1:5));
+isEmptyLine = (sonnetsLines == "");
+sonnetsLines(isEmptyLine) = [];
+disp(sonnetsLines(1:10));
+punctuationMarks = [".", "?", "!", ",", ";", ":"];
+sonnetsLines = replace(sonnetsLines, punctuationMarks, " ");
+disp(sonnetsLines(1:10));
+sonnetsLines = strip(sonnetsLines);
+disp(sonnetsLines(1:10));
+allWords = strings(0);
+for i = 1:length(sonnetsLines)
+    allWords = [allWords; split(sonnetsLines(i))];
+end
+disp(allWords(1:10));
+allWords = lower(allWords);
+[uniqueWords, ~, wordIndices] = unique(allWords);
+wordFrequency = histcounts(wordIndices, numel(uniqueWords));
+[sortedFrequency, sortedIndices] = sort(wordFrequency, 'descend');
+sortedWords = uniqueWords(sortedIndices);
+loglog(sortedFrequency);
+xlabel('Word Rank (Most to Least Common)');
+ylabel('Number of Occurrences');
+disp(sortedWords(1:10));
+sortedFrequency = sortedFrequency';
+totalWords = length(allWords);
+wordTable = table;
+wordTable.Words = sortedWords;
+wordTable.NumOccurrences = sortedFrequency;
+wordTable.PercentOfText = sortedFrequency / totalWords * 100.0;
+wordTable.CumulativePercentOfText = cumsum(sortedFrequency) / totalWords * 100.0;
+disp(wordTable(1:10, :));
